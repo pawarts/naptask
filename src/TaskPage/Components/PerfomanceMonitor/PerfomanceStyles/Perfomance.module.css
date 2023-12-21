@@ -1,0 +1,14 @@
+.header_wrapper {
+    width: 100vw;
+    margin-left: 20px;
+    margin-top: 23px;
+}
+
+.perfomance_text {
+    font-weight: 300;
+}
+
+.header_wrapper div {
+    display: flex;
+    align-items: flex-end;
+}

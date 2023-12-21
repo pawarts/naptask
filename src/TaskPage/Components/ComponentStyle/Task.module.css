@@ -1,0 +1,28 @@
+.task_wrapper {
+    position: absolute;
+    top: 0px;
+    left: 60px;
+    display: flex;
+    padding: 10px 10px 0 10px;
+    margin-left: 20px;
+    background-color: #B6CAFF;
+    height: 100px;
+    border-radius: 8px;
+}
+
+.time_wrapper {
+    display: flex;
+    margin-top: 12px;
+}
+
+.time_icon {
+    margin-right: 10px;
+}
+
+.task_info {
+    margin-right: 30px;
+}
+
+.task_title {
+    max-width: 177px;
+}
