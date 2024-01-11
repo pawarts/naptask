@@ -86,7 +86,7 @@ const CreateTask = (props) => {
                 user_id: localStorage.getItem('user_id')
             }
 
-            fetch('http://localhost:3001/task/add', {
+            fetch('https://naptask-back.onrender.com/task/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json', // Вказати тип відправленого контенту

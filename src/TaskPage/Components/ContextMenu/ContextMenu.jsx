@@ -11,7 +11,7 @@ const ContextMenu = (props) => {
     const hide = props.hide;
     const id = props.id;
 
-    const url = `http://localhost:3001/task/delete/${id}`
+    const url = `https://naptask-back.onrender.com/task/delete/${id}`
 
     const deleteTask = () => {
         fetch(url, {
@@ -22,7 +22,7 @@ const ContextMenu = (props) => {
             body: JSON.stringify({ user_id: window.localStorage.getItem('user_id') })
         })
             .then(response => response.text(''))
-            .then(result => {
+            .then(() => {
                 window.location.pathname = '/task'
             })
             .catch(error => console.log(error))

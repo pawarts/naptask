@@ -64,7 +64,7 @@ const EditTask = (props) => {
 
 
             const id = props.id;
-            const URL = `http://localhost:3001/task/edit/${id}`
+            const URL = `https://naptask-back.onrender.com/task/edit/${id}`
 
             fetch(URL, {
                 method: 'PUT',

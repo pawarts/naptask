@@ -31,7 +31,7 @@ const Table = (props) => {
     useEffect(() => {
         // Ваш код
 
-        fetch(`http://localhost:3001/task?id=${localStorage.getItem('user_id')}`, {
+        fetch(`https://naptask-back.onrender.com/task?id=${localStorage.getItem('user_id')}`, {
             method: 'GET'
         })
             .then(response => response.json())

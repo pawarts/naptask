@@ -27,7 +27,7 @@ const Signup = (props) => {
 
         console.log(queryParam)
 
-        const url = `http://localhost:3001/signup`
+        const url = `https://naptask-back.onrender.comsignup`
 
         console.log(url)
 
