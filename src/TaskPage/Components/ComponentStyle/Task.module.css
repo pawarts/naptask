@@ -3,16 +3,20 @@
     top: 0px;
     left: 60px;
     display: flex;
-    padding: 10px 10px 0 10px;
+    justify-content: space-between;
+    padding: 0 10px;
     margin-left: 20px;
     background-color: #B6CAFF;
     height: 100px;
+    width: 250px;
     border-radius: 8px;
+    transition: .4s;
 }
 
 .time_wrapper {
     display: flex;
     margin-top: 12px;
+    transition: .2s;
 }
 
 .time_icon {
@@ -21,8 +25,16 @@
 
 .task_info {
     margin-right: 30px;
+    margin-top: 10px;
 }
 
 .task_title {
     max-width: 177px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.task_more {
+    margin-top: 10px;
 }

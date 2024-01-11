@@ -17,18 +17,21 @@ const TaskHeader = (props) => {
         const nextDay = new Date(selectedDate);
         nextDay.setDate(selectedDate.getDate() + 1);
         setSelectedDate(nextDay);
+        props.change_date(nextDay)
     };
 
     const handlePrevDay = () => {
         const prevDay = new Date(selectedDate);
         prevDay.setDate(selectedDate.getDate() - 1);
         setSelectedDate(prevDay);
+        props.change_date(prevDay);
     };
 
     const handleToday = () => {
         const today = new Date();
         today.setDate(today.getDate());
         setSelectedDate(today);
+        props.change_date(today);
     };
 
 

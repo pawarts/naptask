@@ -7,23 +7,22 @@ const TimeTable = (props) => {
         //console.log(event.target.getBoundingClientRect())
     }
 
+    const time = props.time;
 
-
-    const time = new Date();
-    let hourNow = time.getHours();
+    let hourNow = time.getHours()
 
     const timeArray = [];
 
-    for (let index = 0; index < 8; index++) {
-
+    for (let index = 0; index < 25; index++) {
         if (hourNow + index > 23) {
             hourNow = -index;
         }
 
         timeArray.push(
-            <span key={index} className={s.time_text} onClick={event => [getCoordiantion(event)]}>
-                {hourNow + index > 12 ? hourNow - 12 + index : hourNow + index}&nbsp;<p key={index - 1}>
-                    {hourNow + index >= 12 ? 'pm' : 'am'}
+            <span key={index} className={s.time_text} onClick={event => getCoordiantion(event)}
+            >
+                {index > 12 ? index - 12 : index}&nbsp;<p key={index - 1}>
+                    {index >= 12 ? 'pm' : 'am'}
                 </p>
             </span>
         )

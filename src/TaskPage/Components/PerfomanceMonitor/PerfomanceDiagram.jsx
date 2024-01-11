@@ -17,8 +17,13 @@ ChartJS.register(
 
 const PerfomanceDiagram = (props) => {
 
-    const done = 0.43;
-    const undone = 1 - done;
+
+    const howManyTask = props.howManyTask
+    const allTaskNumber = howManyTask.howManyTask
+    const doneTaskNumber = howManyTask.howManyTaskDone
+
+    const done = doneTaskNumber / allTaskNumber;
+    const undone = done > 0 ? 1 - done : 0;
 
     const data = {
         datasets: [{
@@ -44,7 +49,7 @@ const PerfomanceDiagram = (props) => {
             <div className={` ${s.diagram_item}`}>
                 <Pie data={data} options={options}></Pie>
             </div>
-            <p className='button_text'>6/10</p>
+            <p className='button_text'>{doneTaskNumber}/{allTaskNumber}</p>
         </div>
     );
 };

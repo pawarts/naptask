@@ -8,3 +8,14 @@
     overflow: hidden;
     margin-bottom: 0;
 }
+
+.add_task_button {
+    position: absolute;
+    bottom: 96px;
+    right: 26px;
+}
+
+.schedule_wrapper {
+    max-height: 696px;
+    overflow: hidden;
+}
