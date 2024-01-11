@@ -44,6 +44,10 @@
     ]
   },
   "proxy": "https://naptask-back.onrender.com",
+  "devServer": {
+    "compress": true,
+    "disableHostCheck": true
+  },
   "browserslist": {
     "production": [
       ">0.2%",
