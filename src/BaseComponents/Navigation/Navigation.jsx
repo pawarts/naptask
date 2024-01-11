@@ -24,9 +24,9 @@ const Navigation = (props) => {
 
             <NavigationLink icon={home} icon_active={home_active} link="/task" />
 
-            <NavigationLink icon={goal} icon_active={goal_active} link="/goal" />
+            <NavigationLink icon={goal} icon_active={goal_active} link="" /> {/*/goal*/}
 
-            <NavigationLink icon={friends} icon_active={friends_active} link="/friends" />
+            <NavigationLink icon={friends} icon_active={friends_active} link="" /> {/*/friends*/}
 
             <NavigationLink icon={person} icon_active={person_active} link="/person" />
         </nav >
