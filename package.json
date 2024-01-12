@@ -43,7 +43,11 @@
       "react-app/jest"
     ]
   },
-  "proxy": "https://naptask-back.onrender.com/",
+    "proxy": {
+    "target": "https://naptask-back.onrender.com/", // вказуємо адресу вашого сервера
+    "secure": false, // може знадобитися, якщо не використовуєте власний SSL-сертифікат
+    "changeOrigin": true // може також знадобитися, щоб змінити походження запиту
+  },
   "devServer": {
     "compress": true,
     "disableHostCheck": true
