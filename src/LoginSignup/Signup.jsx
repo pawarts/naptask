@@ -27,7 +27,7 @@ const Signup = (props) => {
 
         console.log(queryParam)
 
-        const url = `https://naptask-back.onrender.comsignup`
+        const url = `https://naptask-back.onrender.com/signup`
 
         console.log(url)
 
