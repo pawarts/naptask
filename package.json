@@ -43,11 +43,7 @@
       "react-app/jest"
     ]
   },
-    "proxy": {
-    "target": "https://naptask-back.onrender.com/",
-    "secure": false,
-    "changeOrigin": true
-  },
+  "proxy": "https://naptask-back.onrender.com/",
   "devServer": {
     "compress": true,
     "disableHostCheck": true
