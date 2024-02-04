@@ -14,7 +14,7 @@ const TaskPage = (props) => {
     return (
         <div>
             <LoadedPage loaded={loading} />
-            <Loading style={{ display: loaded ? 'none' : 'block' }} />
+            <Loading style={{ display: false ? 'none' : 'block' }} />
         </div>
     )
 }
