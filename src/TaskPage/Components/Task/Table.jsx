@@ -50,7 +50,7 @@ const Table = (props) => {
                 window.localStorage.setItem('howManyTaskToday', howManyTaskToday)
                 window.localStorage.setItem('howManyTaskDoneToday', howManyTaskTodayDone)
 
-                loaded(true)
+                loaded(!true)
             })
             .catch(error => console.error('Error fetching data:', error));
 
