@@ -9,10 +9,11 @@ import { useState, useEffect } from "react"
 const Table = (props) => {
 
     const changeHowManyTask = props.changeHowManyTask
+    const loaded = props.loaded
 
     const [data, setData] = useState([]);
     const [rerender, setRerender] = useState(true);
-    const [loaded, setLoaded] = useState(false);
+    //const [loaded, setLoaded] = useState(false);
 
     const currentTime = new Date();
     let currentMonth = currentTime.getMonth() + 1;
@@ -36,8 +37,6 @@ const Table = (props) => {
         })
             .then(response => response.json())
             .then(result => {
-
-                setLoaded(true)
                 setData(result.tasks);
 
                 const howManyTaskToday = result.tasks.filter(item => item.date === `${currentYear}-${currentMonth}-${currentDay}`).length;
@@ -50,10 +49,12 @@ const Table = (props) => {
 
                 window.localStorage.setItem('howManyTaskToday', howManyTaskToday)
                 window.localStorage.setItem('howManyTaskDoneToday', howManyTaskTodayDone)
+
+                loaded(true)
             })
             .catch(error => console.error('Error fetching data:', error));
 
-    }, [rerender]);
+    }, [rerender, changeHowManyTask, currentDay, currentMonth, currentYear, loaded]);
 
     data.sort((a, b) => {
         const dateA = a.date;
@@ -77,7 +78,7 @@ const Table = (props) => {
         }
     })
 
-    const task = loaded ? data.map((element, index, array) => (
+    const task = data.map((element, index, array) => (
         <Task key={index} title={element.title}
             timeStart={element.startTime} timeEnd={element.endTime}
             date={element.date} currentDate={props.date} color={element.color}
@@ -86,7 +87,7 @@ const Table = (props) => {
                 timeStart: index < data.length - 1 && element.date === array[index + 1].date ? array[index + 1].startTime : "",
                 prev_index: index + 1
             }} rerender={rerender} setRerender={setRerender} />
-    )) : (<p>Loading</p>)
+    ))
 
 
     const scrollToHourNow = (element) => {
