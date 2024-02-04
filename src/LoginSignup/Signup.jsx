@@ -27,7 +27,8 @@ const Signup = (props) => {
 
         console.log(queryParam)
 
-        const url = `https://naptask-back.onrender.com/signup`
+        const domain = process.env.DOMAIN_NAME || 'http://localhost:10000'
+        const url = `${domain}/signup`
 
         console.log(url)
 

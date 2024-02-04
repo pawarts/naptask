@@ -35,7 +35,8 @@ const Login = (props) => {
 
         console.log(queryParam)
 
-        const url = `https://naptask-back.onrender.com/login`
+        const domain = process.env.DOMAIN_NAME || 'http://localhost:10000'
+        const url = `${domain}/login`
 
         fetch(url, {
             method: 'POST',
