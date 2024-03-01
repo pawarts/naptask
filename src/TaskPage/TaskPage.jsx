@@ -11,10 +11,14 @@ const TaskPage = (props) => {
         setLoaded(status)
     }
 
+    /*if (!window.localStorage.getItem('user_id')) {
+        window.location.pathname = '/login'
+    }*/
+
     return (
         <div>
             <LoadedPage loaded={loading} />
-            <Loading style={{ display: false ? 'none' : 'block' }} />
+            <Loading loaded={loaded} />
         </div>
     )
 }

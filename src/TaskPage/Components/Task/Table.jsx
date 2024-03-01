@@ -13,7 +13,6 @@ const Table = (props) => {
 
     const [data, setData] = useState([]);
     const [rerender, setRerender] = useState(true);
-    //const [loaded, setLoaded] = useState(false);
 
     const currentTime = new Date();
     let currentMonth = currentTime.getMonth() + 1;
@@ -31,16 +30,15 @@ const Table = (props) => {
 
     useEffect(() => {
         // Ваш код
-
-        fetch(`https://naptask-back.onrender.com/task?id=${localStorage.getItem('user_id')}`, {
+        const domain = process.env.REACT_APP_DOMAIN_NAME || 'http://localhost:10000'
+        fetch(`${domain}/task?id=${localStorage.getItem('user_id')}`, {
             method: 'GET'
         })
             .then(response => response.json())
             .then(result => {
                 setData(result.tasks);
-
                 const howManyTaskToday = result.tasks.filter(item => item.date === `${currentYear}-${currentMonth}-${currentDay}`).length;
-                const howManyTaskTodayDone = result.tasks.filter(item => item.date === `${currentYear}-${currentMonth}-${currentDay}` && item.missed).length;
+                const howManyTaskTodayDone = result.tasks.filter(item => item.date === `${currentYear}-${currentMonth}-${currentDay}` && item.done).length;
 
                 changeHowManyTask({
                     howManyTask: howManyTaskToday,
@@ -50,43 +48,34 @@ const Table = (props) => {
                 window.localStorage.setItem('howManyTaskToday', howManyTaskToday)
                 window.localStorage.setItem('howManyTaskDoneToday', howManyTaskTodayDone)
 
-                loaded(!true)
+                loaded(true)
             })
             .catch(error => console.error('Error fetching data:', error));
 
-    }, [rerender, changeHowManyTask, currentDay, currentMonth, currentYear, loaded]);
+    }, [rerender]);
 
     data.sort((a, b) => {
-        const dateA = a.date;
-        const dateB = b.date;
+        const timeA = `${a.startTime}`;
+        const timeB = `${b.startTime}`;
 
-        if (dateA < dateB) {
+        if (timeA < timeB) {
             return -1
-        } else if (dateA > dateB) {
+        } else if (timeA > timeB) {
             return 1
         } else {
-            const timeA = `${a.startTime}`;
-            const timeB = `${b.startTime}`;
-
-            if (timeA < timeB) {
-                return -1
-            } else if (timeA > timeB) {
-                return 1
-            } else {
-                return 0
-            }
+            return 0
         }
     })
 
+    const prevTimeChecker = (index, element, array, data) => {
+        return index < data.length - 1 && element.date === array[index + 1].date && !array[index + 1].done
+    }
     const task = data.map((element, index, array) => (
-        <Task key={index} title={element.title}
-            timeStart={element.startTime} timeEnd={element.endTime}
-            date={element.date} currentDate={props.date} color={element.color}
-            id={element._id} prev_time={{
-                overTaskId: index < data.length - 1 && element.date === array[index + 1].date ? array[index + 1]._id : "",
-                timeStart: index < data.length - 1 && element.date === array[index + 1].date ? array[index + 1].startTime : "",
-                prev_index: index + 1
-            }} rerender={rerender} setRerender={setRerender} />
+        <Task key={index} task_element={element} currentDate={props.date} prev_time={{
+            overTaskId: prevTimeChecker(index, element, array, data) ? array[index + 1]._id : "",
+            timeStart: prevTimeChecker(index, element, array, data) ? array[index + 1].startTime : "",
+            prev_index: index + 1
+        }} rerender={rerender} setRerender={setRerender} done={element.done} />
     ))
 
 
@@ -97,8 +86,6 @@ const Table = (props) => {
 
         element.scrollTo({ top: hourNow * time_margin })
     }
-
-
 
     return (
         <div className={s.wrapper} onLoad={(event) => scrollToHourNow(event.currentTarget)}>

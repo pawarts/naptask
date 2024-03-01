@@ -11,7 +11,8 @@ const ContextMenu = (props) => {
     const hide = props.hide;
     const id = props.id;
 
-    const url = `https://naptask-back.onrender.com/task/delete/${id}`
+    const domain = process.env.REACT_APP_DOMAIN_NAME || 'http://localhost:10000'
+    const url = `${domain}/task/delete/${id}`
 
     const deleteTask = () => {
         fetch(url, {

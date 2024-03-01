@@ -10,47 +10,45 @@ import { useState } from 'react'
 const Task = (props) => {
 
 
+    const transformDateNumberToString = (date_number) => {
+        if (date_number < 10) {
+            return '0' + date_number;
+        }
+        return date_number
+    }
+
     const time = new Date();
     //time.setHours(8)
 
     const hourNow = time.getHours();
     const minuteNow = time.getMinutes();
 
-    const date = props.date;
-
     const currentDate = props.currentDate;
-    let current_day = currentDate.getDate();
-    let current_month = currentDate.getMonth() + 1;
+    let current_day = transformDateNumberToString(currentDate.getDate());
+    let current_month = transformDateNumberToString(currentDate.getMonth() + 1);
     const current_year = currentDate.getFullYear();
+
 
     const prev_time = props.prev_time;
 
     const prevTimeStart = prev_time.timeStart;
-    //const prevTimeEnd = prev_time.timeEnd;
 
-    const timeStart = props.timeStart;
-    const timeEnd = props.timeEnd;
-    const title = props.title;
-    const color = props.color;
+    const task_element = props.task_element;
+    const date = task_element.date;
+    const timeStart = task_element.startTime;
+    const timeEnd = task_element.endTime;
+    const title = task_element.title;
+    const color = task_element.color;
 
-    let hourStart = Number(timeStart.split(':')[0]);
-    let minuteStart = Number(timeStart.split(':')[1].slice(0, 2));
-    let hourEnd = Number(timeEnd.split(':')[0]);
-    let minuteEnd = Number(timeEnd.split(':')[1].slice(0, 2));
 
-    if (minuteStart < 10) {
-        minuteStart = '0' + minuteStart;
-    }
-    if (hourStart < 10) {
-        hourStart = '0' + hourStart;
-    }
+    let hourStart = transformDateNumberToString(Number(timeStart.split(':')[0]));
+    let minuteStart = transformDateNumberToString(Number(timeStart.split(':')[1].slice(0, 2)));
+    let hourEnd = transformDateNumberToString(Number(timeEnd.split(':')[0]));
+    let minuteEnd = transformDateNumberToString(Number(timeEnd.split(':')[1].slice(0, 2)));
 
-    if (minuteEnd < 10) {
-        minuteEnd = '0' + minuteEnd;
-    }
-    if (hourEnd < 10) {
-        hourEnd = '0' + hourEnd;
-    }
+    let prevTimeStartDate = new Date(`2024-02-06T${prevTimeStart}:00`);
+    let nowDate = new Date(`2024-02-06T${hourStart}:${minuteStart}:00`);
+    const gapBetweenTask = (prevTimeStartDate - nowDate) / (1000 * 60)
 
 
     let top = 0;
@@ -58,23 +56,6 @@ const Task = (props) => {
     let height = 0;
     let width = 250;
 
-    const overTaskCondition = `${hourStart}:${minuteStart}` < prevTimeStart && prevTimeStart < `${hourEnd}:${minuteEnd}` && prevTimeStart !== '';
-
-    const overTaskArray = window.localStorage.getItem("over_task_array").split(',')
-
-    if (overTaskCondition || overTaskArray.includes(props.id)) {
-        width = width / 2
-
-        if (overTaskArray.includes(props.id)) {
-            left = 145 + 70
-        }
-        overTaskArray.push(prev_time.overTaskId)
-        window.localStorage.setItem('over_task_array', overTaskArray)
-    } else {
-        width = 250
-        left = 60
-        window.localStorage.setItem('over_task_array', overTaskArray.filter(item => item !== props.id))
-    }
 
 
     let hide = false
@@ -97,22 +78,22 @@ const Task = (props) => {
         return height
     }
 
-    if (current_month < 10) {
-        current_month = '0' + current_month;
-    }
-    if (current_day < 10) {
-        current_day = '0' + current_day;
-    }
-
     const date_checker = date === `${current_year}-${current_month}-${current_day}`;
-
-    if (date_checker) {
+    const done = props.done;
+    if (date_checker && !done) {
         hide = false;
         if (!hide) {
             top = hourStart * time_margin;
             if (minuteStart > 0) {
                 top = top + minute_per_pixel * minuteStart;
             }
+
+            if (gapBetweenTask <= 2) {
+                top -= 25
+            } else if (gapBetweenTask <= 9) {
+                top -= 15
+            }
+
             height = heightCalc()
         }
     } else {
@@ -126,11 +107,12 @@ const Task = (props) => {
         const context_wrapper = event.target.classList.contains("ContextMenu_context_item__wLW9R");
         const button_more = event.target.classList.contains("task_more");
 
-        if ((event.currentTarget.clientHeight < 51 && clickCounter) && !context_wrapper && !button_more) {
-            event.currentTarget.style.height = `100px`;
+        if ((event.currentTarget.clientHeight < 75 && clickCounter) && !context_wrapper && !button_more) {
+            event.currentTarget.style.height = `75px`;
             clicked = false;
 
-        } else {
+        } else if (gapBetweenTask < 15 && clickCounter) { clicked = false; }
+        else {
             event.currentTarget.style.height = !short_task ? `${height}px` : '50px';
         }
 
@@ -140,7 +122,7 @@ const Task = (props) => {
     const openContextMenu = () => {
 
         const task_info = {
-            id: props.id,
+            id: task_element._id,
             title: title,
             startTime: timeStart,
             endTime: timeEnd,
@@ -155,7 +137,7 @@ const Task = (props) => {
     }
 
     const short_task = height <= 50;
-    const late_task = `${hourNow}:${minuteNow}` > `${timeEnd}:${minuteEnd}`;
+    const late_task = (`${hourNow}:${minuteNow}` > `${timeEnd}:${minuteEnd}`) && date_checker;
 
     if (late_task) {
         const dataSet = {
@@ -164,8 +146,9 @@ const Task = (props) => {
         }
 
 
-        const id = props.id;
-        const URL = `https://naptask-back.onrender.com/task/edit/${id}`
+        const id = task_element._id;
+        const domain = process.env.REACT_APP_DOMAIN_NAME || 'http://localhost:10000'
+        const URL = `${domain}/task/edit/${id}`
 
         fetch(URL, {
             method: 'PUT',
@@ -178,7 +161,6 @@ const Task = (props) => {
             .catch(error => console.log(error))
     }
 
-
     return (
         <div className={s.task_wrapper} style={{
             top: `${top}px`,
@@ -187,8 +169,11 @@ const Task = (props) => {
             height: short_task ? '50px' : `${height}px`,
             width: width,
             zIndex: !clickCounter ? 2 : 1,
-            backgroundColor: `${color}`,
-        }} onClick={(event) => viewTask(event)}>
+            backgroundColor: `#${color}`,
+        }}
+
+            onClick={(event) => viewTask(event)}>
+
             <div className={s.task_info} >
                 <h3 className={`${s.task_title} task_font`} style={{
                     textOverflow: !clickCounter ? 'none' : 'ellipsis',
@@ -196,7 +181,7 @@ const Task = (props) => {
                     overflow: !clickCounter ? 'visible' : 'hidden',
                 }}>{title}</h3>
                 <div className={s.time_wrapper} style={{
-                    opacity: height > 75 || (!clickCounter && height < 75) ? '1' : '0',
+                    opacity: !clickCounter || height >= 75 ? '1' : '0',
                 }}>
                     <img src={time_icon} alt="" className={s.time_icon} />
                     <p className={`${s.time_text} task_font grey`} >{timeStart} - {timeEnd}</p>
