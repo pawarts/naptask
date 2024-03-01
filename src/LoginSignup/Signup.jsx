@@ -11,39 +11,68 @@ import { useState } from 'react'
 const Signup = (props) => {
 
     const [loginInput, setLoginInput] = useState('');
+    const [loginInputWarning, setLoginInputWarning] = useState(false);
+
     const [emailInput, setEmailInput] = useState('');
-    const [passwordInput, setPasswordInput] = useState('')
+    const [emailInputWarning, setEmailInputWarning] = useState(false);
+
+    const [passwordInput, setPasswordInput] = useState('');
+    const [passwordInputWarning, setPasswordInputWarning] = useState(false);
 
     const setUserProfile = (event) => {
         event.preventDefault();
 
-        const dataSet = {
-            login: loginInput,
-            email: emailInput,
-            password: passwordInput
+        const stringValidator = (string, maxLength, type) => {
+            if (type === 'email') {
+                return string === '' || string.length > maxLength || string.includes(' ') || !string.includes('@') || !string.includes('.')
+            }
+
+            return string === '' || string.length > maxLength || string.includes(' ')
         }
 
-        const queryParam = new URLSearchParams(dataSet).toString()
+        if (stringValidator(loginInput, 20)) {
+            setLoginInputWarning(true)
+        } else {
+            setLoginInputWarning(false)
+        }
 
-        console.log(queryParam)
+        if (stringValidator(passwordInput, 12)) {
+            setPasswordInputWarning(true)
+        } else {
+            setPasswordInputWarning(false)
+        }
 
-        const domain = process.env.DOMAIN_NAME || 'http://localhost:10000'
-        const url = `${domain}/signup`
+        if (stringValidator(emailInput, 30, 'email')) {
+            setEmailInputWarning(true)
+        } else {
+            setEmailInputWarning(false)
+        }
 
-        console.log(url)
+        if (!(loginInputWarning && passwordInputWarning && emailInputWarning) && !(stringValidator(passwordInput, 12) && stringValidator(loginInput, 20) && stringValidator(emailInput, 30))) {
+            const dataSet = {
+                login: loginInput.split(' ')[0],
+                email: emailInput.split(' ')[0],
+                password: passwordInput.split(' ')[0]
+            }
 
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json', // Вказати тип відправленого контенту
-            },
-            body: JSON.stringify(dataSet) // Перетворити дані в JSON-строку
-        })
-            .then(response => response.json())
-            .then((result) => {
-                window.location.pathname = '/login'
+            const domain = process.env.REACT_APP_DOMAIN_NAME || 'http://localhost:10000'
+            const url = `${domain}/signup`
+
+            console.log(url)
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Вказати тип відправленого контенту
+                },
+                body: JSON.stringify(dataSet) // Перетворити дані в JSON-строку
             })
-            .catch(error => console.log(error))
+                .then(response => response.json())
+                .then((result) => {
+                    window.location.pathname = '/login'
+                })
+                .catch(error => console.log(error))
+        }
 
     }
 
@@ -75,11 +104,14 @@ const Signup = (props) => {
                 <Title title="Create account" subtitle="Please enter your details" />
                 <div className='input_wrapper'>
                     <Input input_name="Login" value={loginInput}
-                        changeInput={changeInput} />
-                    <Input input_name="Email" value={emailInput}
-                        changeInput={changeInput} />
+                        changeInput={changeInput} maxLength={30}
+                        warning_text="Check your login" visibility={loginInputWarning} />
+                    <Input input_name="Email" type="email" value={emailInput}
+                        changeInput={changeInput} maxLength={50}
+                        warning_text="Check your mail" visibility={emailInputWarning} />
                     <Input input_name="Password" value={passwordInput}
-                        changeInput={changeInput} />
+                        changeInput={changeInput} type="password" maxLength={12}
+                        warning_text="Check your password" visibility={passwordInputWarning} />
                 </div>
                 <SubmitButton button_text="Sign Up" click={setUserProfile} />
             </form>
